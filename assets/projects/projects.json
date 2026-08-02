@@ -1,0 +1,130 @@
+{
+  "projects": [
+    {
+      "title": "Command-Line Calculator",
+      "level": "Beginner",
+      "description": "Build a REPL calculator that handles +, -, *, /, ** and remembers the last result.",
+      "steps": [
+        "Set up a while True loop for the REPL",
+        "Parse user input with split() to get operator and operands",
+        "Implement each operation in a dispatch dict or match statement",
+        "Handle ZeroDivisionError and invalid input",
+        "Add 'ans' keyword to reuse the last result",
+        "Add a history list and 'history' command"
+      ],
+      "code_snippet": "def calculate(expression):\n    parts = expression.strip().split()\n    if len(parts) != 3:\n        raise ValueError('Format: number operator number')\n    a, op, b = float(parts[0]), parts[1], float(parts[2])\n    ops = {'+': a+b, '-': a-b, '*': a*b, '/': a/b, '**': a**b}\n    if op not in ops:\n        raise ValueError(f'Unknown operator: {op}')\n    return ops[op]\n\nwhile True:\n    expr = input('> ')\n    if expr == 'quit': break\n    print(calculate(expr))"
+    },
+    {
+      "title": "To-Do List App",
+      "level": "Beginner",
+      "description": "A CLI task manager that saves tasks to a JSON file so they persist between runs.",
+      "steps": [
+        "Define a Task dataclass with id, title, done, created_at",
+        "Load/save tasks from tasks.json using json module",
+        "Implement add, list, complete, and delete commands",
+        "Display tasks with colorful status indicators",
+        "Add due date support and sort by due date",
+        "Filter by status: --all, --done, --pending"
+      ],
+      "code_snippet": "import json\nfrom dataclasses import dataclass, asdict\nfrom pathlib import Path\n\n@dataclass\nclass Task:\n    id: int\n    title: str\n    done: bool = False\n\ndef load_tasks(path='tasks.json'):\n    if Path(path).exists():\n        return [Task(**t) for t in json.loads(Path(path).read_text())]\n    return []\n\ndef save_tasks(tasks, path='tasks.json'):\n    Path(path).write_text(json.dumps([asdict(t) for t in tasks]))"
+    },
+    {
+      "title": "Expense Tracker",
+      "level": "Beginner",
+      "description": "Track income and expenses, categorize them, and generate monthly reports saved as CSV.",
+      "steps": [
+        "Design the Expense model with amount, category, date, note",
+        "Store expenses in a CSV file using csv.DictWriter",
+        "Implement add, list, and delete commands",
+        "Calculate totals by category using collections.defaultdict",
+        "Generate a monthly summary report",
+        "Add a budget warning when a category exceeds a set limit"
+      ],
+      "code_snippet": "import csv\nfrom dataclasses import dataclass\nfrom datetime import date\nfrom collections import defaultdict\n\n@dataclass\nclass Expense:\n    amount: float\n    category: str\n    date: str\n    note: str = ''\n\ndef monthly_summary(expenses):\n    totals = defaultdict(float)\n    for e in expenses:\n        totals[e.category] += e.amount\n    return dict(totals)"
+    },
+    {
+      "title": "GitHub Profile Fetcher",
+      "level": "Intermediate",
+      "description": "Fetch a GitHub user's profile, repos, and commit activity using the GitHub REST API.",
+      "steps": [
+        "Set up requests.Session with GitHub token header",
+        "Fetch user profile from /users/{username}",
+        "List top 10 repos sorted by stars",
+        "Fetch recent commits from /repos/{owner}/{repo}/commits",
+        "Cache results to avoid hitting rate limits",
+        "Export profile to a JSON report file"
+      ],
+      "code_snippet": "import requests\nimport os\n\ndef github_client():\n    s = requests.Session()\n    token = os.environ.get('GITHUB_TOKEN')\n    if token:\n        s.headers['Authorization'] = f'Bearer {token}'\n    s.headers['Accept'] = 'application/vnd.github+json'\n    return s\n\ndef get_profile(username):\n    client = github_client()\n    r = client.get(f'https://api.github.com/users/{username}', timeout=5)\n    r.raise_for_status()\n    return r.json()"
+    },
+    {
+      "title": "File Organizer",
+      "level": "Intermediate",
+      "description": "Automatically organize a messy downloads folder by moving files into subfolders by type.",
+      "steps": [
+        "Define a mapping of extensions to folder names",
+        "Use pathlib to iterate all files in target directory",
+        "Create destination folders if they don't exist",
+        "Move each file to its category folder using shutil.move",
+        "Log all moves to a timestamped log file",
+        "Add dry-run mode that shows what would happen without moving"
+      ],
+      "code_snippet": "from pathlib import Path\nimport shutil\n\nEXT_MAP = {\n    'Images': ['.jpg','.jpeg','.png','.gif','.svg'],\n    'Documents': ['.pdf','.docx','.txt','.md'],\n    'Code': ['.py','.js','.ts','.html','.css'],\n    'Archives': ['.zip','.tar','.gz'],\n}\n\ndef organize(folder: str, dry_run=False):\n    src = Path(folder)\n    ext_to_folder = {e: f for f, exts in EXT_MAP.items() for e in exts}\n    for file in src.iterdir():\n        if file.is_file():\n            dest_name = ext_to_folder.get(file.suffix.lower(), 'Other')\n            dest = src / dest_name\n            if not dry_run:\n                dest.mkdir(exist_ok=True)\n                shutil.move(str(file), dest / file.name)\n            print(f'{file.name} -> {dest_name}/')"
+    },
+    {
+      "title": "Web Scraper — News Headlines",
+      "level": "Intermediate",
+      "description": "Scrape the top 20 headlines from Hacker News and save them to a daily JSON file.",
+      "steps": [
+        "Fetch the HN front page with requests",
+        "Parse HTML with BeautifulSoup using CSS selectors",
+        "Extract title, URL, score, and comment count",
+        "Sort by score and take top 20",
+        "Save to a date-stamped JSON file",
+        "Schedule to run daily with the schedule library"
+      ],
+      "code_snippet": "import requests\nfrom bs4 import BeautifulSoup\nimport json\nfrom datetime import date\n\ndef scrape_hn():\n    url = 'https://news.ycombinator.com'\n    soup = BeautifulSoup(requests.get(url, timeout=10).text, 'html.parser')\n    stories = []\n    for row in soup.select('tr.athing'):\n        title_el = row.select_one('span.titleline > a')\n        if title_el:\n            stories.append({'title': title_el.text, 'url': title_el.get('href')})\n    return stories[:20]"
+    },
+    {
+      "title": "AI Chatbot Concept",
+      "level": "Advanced",
+      "description": "Build a terminal chatbot using the OpenAI API with conversation memory and a custom system prompt.",
+      "steps": [
+        "Set up OpenAI client with API key from environment",
+        "Define a system prompt that gives the bot a persona",
+        "Maintain a messages list as conversation history",
+        "Stream the response for a real-time typing effect",
+        "Add a /reset command to clear conversation history",
+        "Save conversation to a JSON file on exit"
+      ],
+      "code_snippet": "import os\nfrom openai import OpenAI\n\nclient = OpenAI()\n\nSYSTEM = 'You are PyBot, a friendly Python tutor. Keep answers concise.'\nmessages = [{'role': 'system', 'content': SYSTEM}]\n\ndef chat(user_input):\n    messages.append({'role': 'user', 'content': user_input})\n    response = client.chat.completions.create(\n        model='gpt-4o-mini', messages=messages, stream=True\n    )\n    reply = ''\n    for chunk in response:\n        delta = chunk.choices[0].delta.content or ''\n        print(delta, end='', flush=True)\n        reply += delta\n    print()\n    messages.append({'role': 'assistant', 'content': reply})"
+    },
+    {
+      "title": "RAG Document Q&A",
+      "level": "Advanced",
+      "description": "Build a RAG pipeline that lets you ask questions about your own PDF or text documents using ChromaDB and OpenAI.",
+      "steps": [
+        "Load and chunk documents into 512-token pieces with overlap",
+        "Embed chunks using OpenAI text-embedding-3-small",
+        "Store embeddings in ChromaDB (local, no server needed)",
+        "On query: embed question, retrieve top-5 similar chunks",
+        "Build an augmented prompt with retrieved context",
+        "Generate answer with GPT-4o-mini and cite sources"
+      ],
+      "code_snippet": "# RAG Pipeline — install: pip install chromadb openai\nimport chromadb\nfrom openai import OpenAI\n\nclient = OpenAI()\nchroma = chromadb.Client()\ncollection = chroma.create_collection('docs')\n\ndef embed(text):\n    return client.embeddings.create(\n        input=text, model='text-embedding-3-small'\n    ).data[0].embedding\n\ndef add_doc(doc_id, text):\n    collection.add(documents=[text], ids=[doc_id],\n                   embeddings=[embed(text)])\n\ndef query(question, top_k=3):\n    results = collection.query(query_embeddings=[embed(question)], n_results=top_k)\n    context = '\\n'.join(results['documents'][0])\n    prompt = f'Context:\\n{context}\\n\\nQuestion: {question}\\nAnswer:'\n    return client.chat.completions.create(\n        model='gpt-4o-mini',\n        messages=[{'role':'user','content':prompt}]\n    ).choices[0].message.content"
+    },
+    {
+      "title": "Multi-Agent Code Reviewer",
+      "level": "Advanced",
+      "description": "A multi-agent system where a Planner decomposes a coding task, a Coder writes code, and a Reviewer checks it.",
+      "steps": [
+        "Define three agents: Planner, Coder, and Reviewer with distinct system prompts",
+        "Planner receives a feature request and outputs numbered implementation steps",
+        "Coder receives each step and writes Python code",
+        "Reviewer receives the code and outputs a structured review with bugs and suggestions",
+        "Orchestrator runs the pipeline and collects outputs",
+        "Save the full conversation trace to a JSON file for debugging"
+      ],
+      "code_snippet": "from openai import OpenAI\nclient = OpenAI()\n\ndef agent(system, user_message, model='gpt-4o-mini'):\n    return client.chat.completions.create(\n        model=model,\n        messages=[\n            {'role': 'system', 'content': system},\n            {'role': 'user', 'content': user_message}\n        ]\n    ).choices[0].message.content\n\nPLANNER = 'You are a software architect. Break tasks into numbered implementation steps.'\nCODER   = 'You are a senior Python developer. Write clean, well-commented code.'\nREVIEWER = 'You are a code reviewer. Find bugs, suggest improvements, rate the code 1-10.'\n\ndef review_pipeline(task):\n    plan   = agent(PLANNER, task)\n    code   = agent(CODER, f'Implement this plan:\\n{plan}')\n    review = agent(REVIEWER, f'Review this code:\\n{code}')\n    return {'plan': plan, 'code': code, 'review': review}"
+    }
+  ]
+}

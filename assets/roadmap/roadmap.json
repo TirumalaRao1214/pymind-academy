@@ -1,0 +1,46 @@
+{
+  "nodes": [
+    {
+      "title": "Python Foundations",
+      "description": "Master the language: variables, data types, control flow, functions, and OOP. This is your launchpad — everything else builds on it.",
+      "status": "Start Here",
+      "skills": ["Variables & Types", "Control Flow", "Functions", "OOP", "File I/O", "Error Handling"]
+    },
+    {
+      "title": "Data Analysis",
+      "description": "Learn to work with data at scale using NumPy arrays and Pandas DataFrames. Essential for every data role.",
+      "status": "Step 2",
+      "skills": ["NumPy", "Pandas", "Data Cleaning", "EDA", "Matplotlib", "Seaborn"]
+    },
+    {
+      "title": "Machine Learning Basics",
+      "description": "Understand supervised and unsupervised learning, train your first models, and evaluate them properly.",
+      "status": "Step 3",
+      "skills": ["scikit-learn", "Linear/Logistic Regression", "Decision Trees", "Random Forests", "Train/Test Split", "Cross-Validation"]
+    },
+    {
+      "title": "Deep Learning",
+      "description": "Neural networks, backpropagation, CNNs for images, and RNNs/Transformers for sequences.",
+      "status": "Step 4",
+      "skills": ["Neural Networks", "PyTorch / TensorFlow", "CNNs", "Transfer Learning", "Model Training", "GPU Acceleration"]
+    },
+    {
+      "title": "NLP & Text",
+      "description": "Process and understand natural language — tokenization, embeddings, sentiment analysis, and text classification.",
+      "status": "Step 5",
+      "skills": ["Tokenization", "Word Embeddings", "Transformers", "HuggingFace", "Text Classification", "Sentiment Analysis"]
+    },
+    {
+      "title": "LLMs & Prompt Engineering",
+      "description": "Work with large language models via APIs. Master prompt engineering, structured outputs, and context management.",
+      "status": "Step 6",
+      "skills": ["OpenAI API", "Prompt Engineering", "Few-shot Learning", "Chain-of-Thought", "Structured Output", "Token Management"]
+    },
+    {
+      "title": "Agentic AI",
+      "description": "Build autonomous AI agents with tools, memory, and multi-agent orchestration. The frontier of AI engineering.",
+      "status": "Advanced",
+      "skills": ["RAG", "Function Calling", "AI Agents", "LangChain", "LangGraph", "Multi-Agent Systems", "AutoGen", "Strands"]
+    }
+  ]
+}
